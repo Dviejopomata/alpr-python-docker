@@ -2,7 +2,7 @@ import os
 import sys
 import uuid
 
-from flask import Flask, request, redirect, flash, jsonify
+from flask import Flask, request, abort, flash, jsonify
 from openalpr import Alpr
 
 app = Flask(__name__)
@@ -19,18 +19,17 @@ alpr.set_default_region("md")
 
 @app.route('/', methods=['POST'])
 def get_plate_number():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            flash('No file part')
-            return redirect(request.url)
-        filename = str(uuid.uuid4())
-        path_join = os.path.join("/tmp", filename)
+    if 'file' not in request.files:
+        flash('No file part')
+        return abort(400)
+    filename = str(uuid.uuid4())
+    path_join = os.path.join("/tmp", filename)
 
-        multipart_file = request.files['file']
-        multipart_file.save(path_join)
-        results = alpr.recognize_file(path_join)
-        os.remove(path_join)
-        return jsonify(results['results'])
+    multipart_file = request.files['file']
+    multipart_file.save(path_join)
+    results = alpr.recognize_file(path_join)
+    os.remove(path_join)
+    return jsonify(results['results'])
 
 
 if __name__ == '__main__':
