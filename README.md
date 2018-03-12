@@ -7,5 +7,10 @@ make dev
 
 To build the image and run it
 ```bash
-make prod
+make run-prod
+```
+
+To test it
+```bash
+make test-prod
 ```

@@ -8,5 +8,5 @@ prod:
 run-prod: prod
 	docker run --name prod_alpr --rm -p 5000:5000 -v $(pwd):/code -it alpr-prod-python
 
-test:
+test-prod:
 	time curl -XPOST -F 'file=@./plate_number.jpg' http://localhost:5000
